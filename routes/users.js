@@ -17,7 +17,7 @@ const router = express.Router();
 //   },
 // ];
 
-const users = []
+let users = []
 
 // Getting the list of users from the mock database
 router.get('/', (req, res) => {
@@ -32,4 +32,40 @@ router.post('/', (req, res) => {
     res.send(`${user.first_name} has been added to the Database`);
 })
 
+router.get('/:id', (req, res) => {
+    const { id } = req.params;
+
+    const foundUser = users.find((user) => user.id === id)
+
+    if(foundUser){
+        res.send(foundUser)
+    }
+    else {
+        res.status(404).send('user not found');
+    }
+});
+
+router.delete('/:id', (req, res) => {
+    const { id } = req.params;
+  
+    users = users.filter((user) => user.id !== id)
+  
+    res.send(`${id} deleted successfully from the database`);
+  });
+
+  router.patch('/:id', (req, res) => {
+    const { id } = req.params;
+  
+    const { first_name, last_name, email} = req.body;
+  
+    const user = users.find((user) => user.id === id)
+  
+    if(first_name) user.first_name = first_name;
+    if(last_name) user.last_name = last_name;
+    if(email) user.email = email;
+  
+    res.send(`User with the ${id} has been updated`)
+  
+  });
+  
 export default router
